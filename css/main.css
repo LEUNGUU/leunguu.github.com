@@ -1948,7 +1948,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #75a191;
+  background: #ff59ff;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3166,7 +3166,7 @@ hr {
   }
 }
 body {
-  background: url("/images/bluebellinwood.jpg");
+  background: url("/images/wood.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
