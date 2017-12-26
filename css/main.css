@@ -1948,7 +1948,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #d22dff;
+  background: #1c1ffe;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3190,7 +3190,7 @@ body {
   color: #ff8000;
 }
 #sidebar {
-  background: url("/images/timg.jpeg");
+  background: url("/images/timg.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
