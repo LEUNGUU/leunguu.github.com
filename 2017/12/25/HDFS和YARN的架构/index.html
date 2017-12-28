@@ -133,7 +133,7 @@
 <meta property="og:image" content="http://yoursite.com/images/hdfsarchitecture.png">
 <meta property="og:image" content="http://yoursite.com/images/hdfsdatanodes.png">
 <meta property="og:image" content="http://yoursite.com/images/yarn.gif">
-<meta property="og:updated_time" content="2017-12-27T15:37:03.000Z">
+<meta property="og:updated_time" content="2017-12-28T13:36:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HDFS和YARN的架构">
 <meta name="twitter:description" content="前言&amp;emsp;&amp;emsp;在企业里面，我们搭建一个服务一般都会考虑几个问题。首先是用途，比方说一般都有开发环境，测试环境以及生产环境（比较重要的服务一般还会有灰度环境）。这个用途一旦决定了，我们就可以考虑接下来的问题了。第二是架构，第三就是成本了。架构会直接决定所需要花费的机器成本和维护成本。好吧，好像有点扯远了。。。回到正题。这里我想要说明的事情是我当上大数据运维之后，遇到的坑其实都可以归根溯">
@@ -417,7 +417,7 @@
 
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>&emsp;&emsp;在企业里面，我们搭建一个服务一般都会考虑几个问题。首先是用途，比方说一般都有开发环境，测试环境以及生产环境（比较重要的服务一般还会有灰度环境）。这个用途一旦决定了，我们就可以考虑接下来的问题了。第二是架构，第三就是成本了。架构会直接决定所需要花费的机器成本和维护成本。好吧，好像有点扯远了。。。回到正题。这里我想要说明的事情是我当上大数据运维之后，遇到的坑其实都可以归根溯源到架构或者原理的理解上面。所以我特别想记录一下hdfs和yarn的架构，遇到坑的时候回想一下或许可以从这里找到解决问题的思路。</p>
-<p></p><p id="div-border-left-blue"><font size="5">HDFS</font></p><br>hdfs包含两种角色，Namenode和Datanode。下面是一张官方架构图。<br><img src="/images/hdfsarchitecture.png" alt=""><br>&emsp;&emsp;hdfs是典型的主从架构。在hdfs的内部，文件是会被划分成多个块，块被存储在一组slave里面（就是图里的绿色小方格）。<br>&emsp;&emsp;master负责管理文件系统的命名空间（比如打开文件，关闭文件以及重命名文件和文件夹）,客户端对文件系统的访问权限以及块和slave的映射关系。<br>&emsp;&emsp;slave负责存储文件，处理客户端的读写请求并且根据master的指令对块进行创建，删除以及复制。<p></p>
+<h3 id="HDFS"><a href="#HDFS" class="headerlink" title="HDFS"></a><p id="div-border-left-blue"><font size="5">HDFS</font></p></h3><p>hdfs包含两种角色，Namenode和Datanode。下面是一张官方架构图。<br><img src="/images/hdfsarchitecture.png" alt=""><br>&emsp;&emsp;hdfs是典型的主从架构。在hdfs的内部，文件是会被划分成多个块，块被存储在一组slave里面（就是图里的绿色小方格）。<br>&emsp;&emsp;master负责管理文件系统的命名空间（比如打开文件，关闭文件以及重命名文件和文件夹）,客户端对文件系统的访问权限以及块和slave的映射关系。<br>&emsp;&emsp;slave负责存储文件，处理客户端的读写请求并且根据master的指令对块进行创建，删除以及复制。</p>
 <p>下面分几个方面描述一个hdfs这个分布式文件系统。</p>
 <ul>
 <li><span id="inline-purple"><font size="2">命名空间</font></span></li>
@@ -477,7 +477,7 @@
 <ol>
 <li>文件删除与恢复<br>文件被删之后并不是马上移除，而是被移动到trash目录，这时候是可以被恢复的。用户可以设置一个过期时间，时间一过，文件就会被NN移除了。文件移除与空间释放之间会有一个延时。</li>
 </ol>
-<p></p><p id="div-border-left-blue"><font size="5">YARN</font></p><br>&emsp;&emsp;yarn有几个角色，都比较重要。我们先看图然后再总结一下角色的作用。<br><img src="/images/yarn.gif" alt=""><p></p>
+<h3 id="YARN"><a href="#YARN" class="headerlink" title="YARN"></a><p id="div-border-left-blue"><font size="5">YARN</font></p></h3><p>&emsp;&emsp;yarn有几个角色，都比较重要。我们先看图然后再总结一下角色的作用。<br><img src="/images/yarn.gif" alt=""></p>
 <ul>
 <li><span id="inline-green"><font size="2">ResourceManager</font></span><br>RM主要有两个组件，一个是scheduler，另一个是ApplicationManager。</li>
 </ul>
@@ -558,6 +558,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/28/Hive架构/" rel="prev" title="Hive架构">
+                Hive架构 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -640,7 +644,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -702,7 +706,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS"><span class="nav-number">2.</span> <span class="nav-text">HDFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YARN"><span class="nav-number">3.</span> <span class="nav-text">YARN</span></a></li></ol></div>
             
 
           </div>
