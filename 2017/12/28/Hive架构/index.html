@@ -131,7 +131,7 @@
 <meta property="og:description" content="下图展示了Hive的组成以及Hive和Hadoop的交互。 Hive组件UI： 用户提交查询语句以及其它管理操作的入口(command line) Driver： 接收用户提交的查询语句，与Compiler创建会话连接。 Compiler： 对查询语句进行语义分析并生成执行计划 Metastore: 元数据库，存储表的结构信息，分区信息以及与HDFS文件的关联信息。 Execution engin">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/hive_architecture.png">
-<meta property="og:updated_time" content="2017-12-29T15:18:26.000Z">
+<meta property="og:updated_time" content="2017-12-29T15:20:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hive架构">
 <meta name="twitter:description" content="下图展示了Hive的组成以及Hive和Hadoop的交互。 Hive组件UI： 用户提交查询语句以及其它管理操作的入口(command line) Driver： 接收用户提交的查询语句，与Compiler创建会话连接。 Compiler： 对查询语句进行语义分析并生成执行计划 Metastore: 元数据库，存储表的结构信息，分区信息以及与HDFS文件的关联信息。 Execution engin">
@@ -435,8 +435,9 @@
 </ul>
 <h3 id="元数据库架构"><a href="#元数据库架构" class="headerlink" title="元数据库架构"></a><p id="div-border-left-yellow">元数据库架构</p></h3><ul>
 <li>内嵌：使用Derby作为metastore，client直接连接即可。</li>
-<li>远程：推荐使用mysql，这时候metasore是一个Thrift的服务。mysql可以做主从架构。<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a><p id="div-border-left-yellow">参考</p></h3>[<a href="https://cwiki.apache.org/confluence/display/Hive/Home" target="_blank" rel="noopener">https://cwiki.apache.org/confluence/display/Hive/Home</a>]<br>(<a href="https://cwiki.apache.org/confluence/display/Hive/Home" target="_blank" rel="noopener">https://cwiki.apache.org/confluence/display/Hive/Home</a>)</li>
+<li>远程：推荐使用mysql，这时候metasore是一个Thrift的服务。mysql可以做主从架构。</li>
 </ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a><p id="div-border-left-yellow">参考</p></h3><p>[<a href="https://cwiki.apache.org/confluence/display/Hive/Home" target="_blank" rel="noopener">https://cwiki.apache.org/confluence/display/Hive/Home</a>]<br>(<a href="https://cwiki.apache.org/confluence/display/Hive/Home" target="_blank" rel="noopener">https://cwiki.apache.org/confluence/display/Hive/Home</a>)</p>
 
       
     </div>
