@@ -331,6 +331,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/30/Hbase-architecture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LEUNGUU">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/my_photo.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学而时习之">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/30/Hbase-architecture/" itemprop="url">Hbase架构</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-30T10:56:40+08:00">
+                2017-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/12/30/Hbase-architecture/" class="leancloud_visitors" data-flag-title="Hbase架构">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          在介绍hbase主要的角色HMaster和Regionserver的时候，我们先来看看元数据表hbase:meta。在0.96之前，元数据表是分成-ROOT-和.META.两张表的，0.96之后统一变成hbase:meta了。我们主要介绍一下hbase:meta。
+hbase:metahbase:meta是一张保存了所有region信息的储存在zookeeper里面的表。表结构如下：
+
+KeyRegion key of the format ([table],[region start key],[region id])
+
+Valuesinfo:regioninfo (serialized H
+          ...
+          <!--noindex-->
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/12/30/Hbase-architecture/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/28/Hive架构/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -372,6 +536,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -422,7 +608,7 @@ Execution engine: 执行Compiler生成的执行计划（管理不同执行阶段
 Hive 查询语句的执行过程看图说话。UI将查询语句传给Driver，Driver为查询语
           ...
           <!--noindex-->
-          <div class="post-button text-center">
+          <div class="post-more-link text-center">
             <a class="btn" href="/2017/12/28/Hive架构/#more" rel="contents">
               阅读全文 &raquo;
             </a>
@@ -516,6 +702,28 @@ Hive 查询语句的执行过程看图说话。UI将查询语句传给Driver，D
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -560,7 +768,7 @@ Hive 查询语句的执行过程看图说话。UI将查询语句传给Driver，D
 HDFShdfs包含两种角色，Namenode和Datanode。下面
           ...
           <!--noindex-->
-          <div class="post-button text-center">
+          <div class="post-more-link text-center">
             <a class="btn" href="/2017/12/25/HDFS和YARN的架构/#more" rel="contents">
               阅读全文 &raquo;
             </a>
@@ -698,7 +906,7 @@ HDFShdfs包含两种角色，Namenode和Datanode。下面
 初识hadoop&emsp;&emsp;对hadoop生态圈形成概念并开始动手操作是在听dataguru的tiger老师课程的时候。那时候很认真听每一节课，从hadoop的原理到动手搭建伪分布式集群，都认认真真一步一步按照老师的讲法来操作。这个过程
           ...
           <!--noindex-->
-          <div class="post-button text-center">
+          <div class="post-more-link text-center">
             <a class="btn" href="/2017/12/24/回忆录（大数据方向）/#more" rel="contents">
               阅读全文 &raquo;
             </a>
@@ -867,7 +1075,7 @@ HDFShdfs包含两种角色，Namenode和Datanode。下面
 101 (Switching Prot
           ...
           <!--noindex-->
-          <div class="post-button text-center">
+          <div class="post-more-link text-center">
             <a class="btn" href="/2017/12/23/关于HTTP状态码的总结/#more" rel="contents">
               阅读全文 &raquo;
             </a>
@@ -1029,7 +1237,7 @@ HDFShdfs包含两种角色，Namenode和Datanode。下面
 &emsp;&emsp; 本主页是博主用来记录工作和生活中的点滴，希望像古人说的那样时常回顾过去，总结自身，展望未来。笔者至今工作三年有余，从一个什么都不懂的小白，到苦逼的业务运维，再到会“偷懒”的运维开发，中间踩过不少坑，也填过不少坑。希望在这里记录一下成长的历程。用以提醒自己，同时希望可以启迪读者。&emsp;&emsp;经过思考，将会做成回忆录的形式。脑海里始终萦绕着一句话，“一段往事，一种技术”。既是回忆往事经历，同时也是回忆所学之技术。或许，这就是我写这个博客的主要目的。&emsp;&emsp;最后，借用曾子
           ...
           <!--noindex-->
-          <div class="post-button text-center">
+          <div class="post-more-link text-center">
             <a class="btn" href="/2017/12/22/写在开始/#more" rel="contents">
               阅读全文 &raquo;
             </a>
@@ -1118,7 +1326,7 @@ HDFShdfs包含两种角色，Namenode和Datanode。下面
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1128,8 +1336,8 @@ HDFShdfs包含两种角色，Namenode和Datanode。下面
               
               
               <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                <a href="/bigdata/index.html">
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1455,6 +1663,21 @@ HDFShdfs包含两种角色，Namenode和Datanode。下面
 
 
   
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
 
   
 

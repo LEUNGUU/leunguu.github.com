@@ -1948,7 +1948,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #87472e;
+  background: #ff713c;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3003,6 +3003,15 @@ hr {
 @media (max-width: 767px) {
   .menu {
     float: none;
+  }
+}
+.site-nav-toggle {
+  left: 20px;
+  top: 20px;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .site-nav-toggle {
+    display: block;
   }
 }
 .site-search form {
