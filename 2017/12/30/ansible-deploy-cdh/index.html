@@ -123,13 +123,17 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="学而时习之">
-<meta property="og:url" content="http://yoursite.com/archives/2017/12/index.html">
+<meta name="description" content="部署准备本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配   组件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ansible部署CDH">
+<meta property="og:url" content="http://yoursite.com/2017/12/30/ansible-deploy-cdh/index.html">
 <meta property="og:site_name" content="学而时习之">
+<meta property="og:description" content="部署准备本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配   组件">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-30T08:59:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="学而时习之">
+<meta name="twitter:title" content="Ansible部署CDH">
+<meta name="twitter:description" content="部署准备本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配   组件">
 
 
 
@@ -159,13 +163,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/archives/2017/12/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/12/30/ansible-deploy-cdh/"/>
 
 
 
 
 
-  <title>归档 | 学而时习之</title>
+  <title>Ansible部署CDH | 学而时习之</title>
   
 
 
@@ -184,7 +188,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -316,226 +320,222 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/30/ansible-deploy-cdh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LEUNGUU">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/my_photo.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学而时习之">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">Ansible部署CDH</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-30T16:23:37+08:00">
+                2017-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 7 篇日志。 继续努力。
-      </span>
 
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2017">2017</h1>
-          </div>
-        
-        
+            
+          
 
-        
+          
+          
+             <span id="/2017/12/30/ansible-deploy-cdh/" class="leancloud_visitors" data-flag-title="Ansible部署CDH">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/12/30/ansible-deploy-cdh/" itemprop="url">
-              
-                <span itemprop="name">Ansible部署CDH</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-30T16:23:37+08:00"
-              content="2017-12-30" >
-          12-30
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/12/30/Hbase-architecture/" itemprop="url">
-              
-                <span itemprop="name">Hbase架构</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-30T10:56:40+08:00"
-              content="2017-12-30" >
-          12-30
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/12/28/Hive-architecture/" itemprop="url">
-              
-                <span itemprop="name">Hive架构</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-28T22:50:15+08:00"
-              content="2017-12-28" >
-          12-28
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <h3 id="部署准备"><a href="#部署准备" class="headerlink" title="部署准备"></a>部署准备</h3><p>本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[<a href="https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html</a>]</p>
+<h3 id="角色分配"><a href="#角色分配" class="headerlink" title="角色分配"></a>角色分配</h3><table>
+<thead>
+<tr>
+<th style="text-align:center">组件</th>
+<th style="text-align:center">角色1</th>
+<th style="text-align:center">角色2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">HDFS</td>
+<td style="text-align:center">NameNode1</td>
+<td style="text-align:center">NameNode2</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">cdh-test-01</td>
+<td style="text-align:center">cdh-test-02</td>
+</tr>
+<tr>
+<td style="text-align:center">YARN</td>
+<td style="text-align:center">ResourceManager1</td>
+<td style="text-align:center">ResourceManager2</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">cdh-test-01</td>
+<td style="text-align:center">cdh-test-02</td>
+</tr>
+<tr>
+<td style="text-align:center">Hbase</td>
+<td style="text-align:center">HMaster1</td>
+<td style="text-align:center">HMaster2</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">cdh-test-01</td>
+<td style="text-align:center">cdh-test-02</td>
+</tr>
+</tbody>
+</table>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/12/25/HDFS和YARN的架构/" itemprop="url">
-              
-                <span itemprop="name">HDFS和YARN的架构</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-25T11:06:44+08:00"
-              content="2017-12-25" >
-          12-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2017/12/24/回忆录（大数据方向）/" itemprop="url">
-              
-                <span itemprop="name">回忆录（关于大数据）</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-12-24T11:02:15+08:00"
-              content="2017-12-24" >
-          12-24
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="LEUNGUU 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="LEUNGUU 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/30/Hbase-architecture/" rel="next" title="Hbase架构">
+                <i class="fa fa-chevron-left"></i> Hbase架构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/2017/12/page/2/">2</a><a class="extend next" rel="next" href="/archives/2017/12/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+  </article>
 
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -543,6 +543,12 @@
 
 
           
+  
+    <div class="comments" id="comments">
+      <div id="uyan_frame"></div>
+    </div>
+  
+
 
         </div>
         
@@ -563,8 +569,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -635,6 +650,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部署准备"><span class="nav-number">1.</span> <span class="nav-text">部署准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角色分配"><span class="nav-number">2.</span> <span class="nav-text">角色分配</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -750,6 +781,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
 
   
 
@@ -775,6 +810,10 @@
   
     
 
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2152691"></script>
+      <!-- UY END -->
     
   
 
