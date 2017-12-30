@@ -123,17 +123,17 @@
 
 
 
-<meta name="description" content="部署准备本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配   组件">
+<meta name="description" content="部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配注：nn=Nam">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Ansible部署CDH">
 <meta property="og:url" content="http://yoursite.com/2017/12/30/ansible-deploy-cdh/index.html">
 <meta property="og:site_name" content="学而时习之">
-<meta property="og:description" content="部署准备本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配   组件">
+<meta property="og:description" content="部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配注：nn=Nam">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-30T08:59:58.000Z">
+<meta property="og:updated_time" content="2017-12-30T14:26:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ansible部署CDH">
-<meta name="twitter:description" content="部署准备本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配   组件">
+<meta name="twitter:description" content="部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html] 角色分配注：nn=Nam">
 
 
 
@@ -412,48 +412,15 @@
       
 
       
-        <h3 id="部署准备"><a href="#部署准备" class="headerlink" title="部署准备"></a>部署准备</h3><p>本次部署采用ansible，以及CDH（cloudera hadoop）。由于作为例子，仅展示最小化部署高可用集群（五个节点）。详细部署方式可以参考官方文档。 (点击这里)[<a href="https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html</a>]</p>
-<h3 id="角色分配"><a href="#角色分配" class="headerlink" title="角色分配"></a>角色分配</h3><table>
-<thead>
-<tr>
-<th style="text-align:center">组件</th>
-<th style="text-align:center">角色1</th>
-<th style="text-align:center">角色2</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">HDFS</td>
-<td style="text-align:center">NameNode1</td>
-<td style="text-align:center">NameNode2</td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">cdh-test-01</td>
-<td style="text-align:center">cdh-test-02</td>
-</tr>
-<tr>
-<td style="text-align:center">YARN</td>
-<td style="text-align:center">ResourceManager1</td>
-<td style="text-align:center">ResourceManager2</td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">cdh-test-01</td>
-<td style="text-align:center">cdh-test-02</td>
-</tr>
-<tr>
-<td style="text-align:center">Hbase</td>
-<td style="text-align:center">HMaster1</td>
-<td style="text-align:center">HMaster2</td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">cdh-test-01</td>
-<td style="text-align:center">cdh-test-02</td>
-</tr>
-</tbody>
-</table>
+        <h3 id="部署准备"><a href="#部署准备" class="headerlink" title="部署准备"></a>部署准备</h3><p>本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 (点击这里)[<a href="https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html</a>]</p>
+<h3 id="角色分配"><a href="#角色分配" class="headerlink" title="角色分配"></a>角色分配</h3><p>注：nn=NameNode,dn=DataNode,rm=ResourceManager,nm=NodeManager<br>zk=ZooKeeper,jn=JournalNode,rs=RegionServer,jhs=JobHistoryServer<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cdh-test-01: nn, rm, hmaster</span><br><span class="line">cdh-test-02: nn, rm, hmaster</span><br><span class="line">cdh-test-03: dn, nm, zk, jn, rs</span><br><span class="line">cdh-test-04: dn, nm, zk, jn, rs</span><br><span class="line">cdh-test-05: dn, nm, zk, jn, rs</span><br><span class="line">cdh-test-client: hive, spark, hue, jhs-httpfs, hbase-thriftserver,mysql</span><br></pre></td></tr></table></figure></p>
+<h3 id="部署细节"><a href="#部署细节" class="headerlink" title="部署细节"></a>部署细节</h3><p>我使用ansible部署这套cdh集群的时候，遇到的难题主要是如何令到整个部署过程更加顺滑。这里面首先就是ansible的使用哲学，主机组的定义以及role的编排。这里面我目前想到的是两种编写ansible脚本的方式。<br>一种是一个组件一个role一个对应的主机组，比如，hdfs这一个组件写成一个role，主机组里面写hdfs需要的全部主机，然后role里面的task就需要写得比较复杂一点，因为不同主机安装不同的包和下发不同的配置文件；另一种是以主机角色区分role，主机组也是以主机角色进行编排。比如，前面两台机cdh-test-0[1,2]我定义在了hadoop-master和hbase-master的组里面，cdh-test-0[3,4,5]我定义在了hadoop-slave和hbase-slave的组里面，分别对应不同的role，role里面的task就可以写得比较简单，只需要关注某一个角色的安装包和配置文件即可。</p>
+<p>除了这个还需要记录几点：</p>
+<ul>
+<li>使用了kerberos，提高了集群的安全性，访问数据以及提交任务都需要使用对应用户的keytab，需要搭建krb认证服务以及dns解析服务</li>
+<li>hive的metastore使用的是remote方式，暂时将mysql装在client节点上，是单节点，生产环境需要搭建主从可切换</li>
+<li>集群的底层资源控制使用的是cgroup，cgroup可以更好地将主机性能进行有效分配，任务层面的资源调度使用的是fair-scheduler</li>
+</ul>
 
       
     </div>
@@ -608,7 +575,7 @@
               
               
               <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
+                <a href="/bigdata/index.html">
                   <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
@@ -660,7 +627,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部署准备"><span class="nav-number">1.</span> <span class="nav-text">部署准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角色分配"><span class="nav-number">2.</span> <span class="nav-text">角色分配</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部署准备"><span class="nav-number">1.</span> <span class="nav-text">部署准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#角色分配"><span class="nav-number">2.</span> <span class="nav-text">角色分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署细节"><span class="nav-number">3.</span> <span class="nav-text">部署细节</span></a></li></ol></div>
             
 
           </div>
