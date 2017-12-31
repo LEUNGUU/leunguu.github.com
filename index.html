@@ -695,6 +695,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -735,8 +757,8 @@
       
         
           
-          部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 (点击这里)[https://www.cloudera.com/documentation/cdh/5-1-x/CDH5-Installation-Guide/cdh5ig_cdh5_install.html]
-角色分配注：nn=NameNode,dn=DataNode,rm=ResourceManager,nm=NodeManagerzk=ZooKeeper,jn=JournalNode,rs=RegionServer,jhs=J
+          部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 点击这里
+角色分配cdh-test-01: nn, rm, hmastercdh-test-02: nn, rm, hmastercdh-test-03: dn, nm, zk, jn, rscdh-test-04: dn, nm, zk, jn, rscdh-test-05: dn, nm, zk, jn, rscdh-test-client: hive, spark, hue, jhs-httpfs, hbase-thrifts
           ...
           <!--noindex-->
           <div class="post-more-link text-center">
