@@ -130,7 +130,7 @@
 <meta property="og:site_name" content="学而时习之">
 <meta property="og:description" content="部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 点击这里 角色分配cdh-test-01: nn, rm, hmastercdh-test-02: nn, rm, hmastercdh-test-03: dn, nm, zk, jn, rscdh-test-04: dn, nm, z">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-12-31T04:02:53.000Z">
+<meta property="og:updated_time" content="2017-12-31T04:04:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ansible部署CDH">
 <meta name="twitter:description" content="部署准备本次部署采用ansible，以及CDH(cloudera hadoop)。由于作为例子，仅展示最小化的集群部署（六个节点）。详细部署方式可以参考官方文档。 点击这里 角色分配cdh-test-01: nn, rm, hmastercdh-test-02: nn, rm, hmastercdh-test-03: dn, nm, zk, jn, rscdh-test-04: dn, nm, z">
@@ -444,7 +444,7 @@
 <ul>
 <li>使用了kerberos提高集群的安全性，访问数据以及提交任务都需要使用对应用户的keytab，需搭建krb认证服务和dns服务,生成用户keytab和服务keytab</li>
 <li>hive的metastore使用的是remote方式，暂时将mysql装在client节点上，是单节点，生产环境需要搭建主从可切换</li>
-<li>集群的底层资源控制使用的是cgroup，cgroup可以更好地将主机性能进行有效分配，任务层面的资源调度使用的是fair-scheduler</li>
+<li>集群的底层资源控制使用的是cgroup，cgroup可以更好地将主机资源进行有效分配，任务层面的资源调度使用的是fair-scheduler</li>
 <li>配置文件里面涉及到帐号密码等敏感信息建议使用ansible-valut来进行加密</li>
 </ul>
 <h3 id="安装脚本"><a href="#安装脚本" class="headerlink" title="安装脚本"></a><p id="div-border-left-blue">安装脚本</p></h3><p><a href="https://github.com/LEUNGUU/ansible-cdh" target="_blank" rel="noopener">https://github.com/LEUNGUU/ansible-cdh</a><br>欢迎批评指正，谢谢！😄</p>
@@ -602,7 +602,7 @@
               
               
               <div class="site-state-item site-state-categories">
-                <a href="/bigdata/index.html">
+                <a href="/categories/index.html">
                   <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
