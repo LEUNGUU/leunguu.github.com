@@ -137,7 +137,7 @@
 <meta property="og:site_name" content="学而时习之">
 <meta property="og:description" content="前言记录一下当时在管理CDH版本的Hbase时候的一些小经验。 配置HBase CanaryCanary是一个阶段性检查RegionServer是否存活的服务。默认是关闭的，你可以启用这个服务，并设置一些相关属性。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-03T12:29:34.000Z">
+<meta property="og:updated_time" content="2018-01-03T13:25:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hbase的一点小总结">
 <meta name="twitter:description" content="前言记录一下当时在管理CDH版本的Hbase时候的一些小经验。 配置HBase CanaryCanary是一个阶段性检查RegionServer是否存活的服务。默认是关闭的，你可以启用这个服务，并设置一些相关属性。">
@@ -435,7 +435,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  456
+                  514
                 </span>
               
 
@@ -507,6 +507,21 @@
 &lt;/property&gt;
 </code></pre><p>同时，如果对RS使用graceful_stop，这个脚本会去检查balancer是否开启，如果是，会自动把balancer关闭，故节点下线之后需要手动开启balancer。命令如下：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">balance_switch <span class="literal">true</span></span><br></pre></td></tr></table></figure></p>
 <p>同时，也可以手动关闭balancer，命令如下；<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">balance_switch <span class="literal">false</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="hbase节点平滑下线"><a href="#hbase节点平滑下线" class="headerlink" title="hbase节点平滑下线"></a><p id="div-border-left-blue">hbase节点平滑下线</p></h3><p>注：这是管理CDH版本Hbase的办法。</p>
+<ol>
+<li><p>切换balance:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">balance_switch <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>unload:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/usr/bin/hbase --config  /etc/hbase/conf org.jruby.Main /usr/lib/hbase/bin/region_mover.rb  unload &lt;hostname&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>停止RS:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">service hbase-regionserver stop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>切换balance:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">balance_switch <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a><p id="div-border-left-blue">参考</p></h3><p><a href="https://www.cloudera.com/documentation/enterprise/latest/topics/admin_hbase_config.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/enterprise/latest/topics/admin_hbase_config.html</a></p>
 
       
@@ -680,7 +695,7 @@
               
               
               <div class="site-state-item site-state-categories">
-                <a href="/categories/index.html">
+                <a href="/bigdata/index.html">
                   <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
@@ -732,7 +747,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置HBase-Canary"><span class="nav-number">2.</span> <span class="nav-text">配置HBase Canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检查以及修复HBase表"><span class="nav-number">3.</span> <span class="nav-text">检查以及修复HBase表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hedged-Read"><span class="nav-number">4.</span> <span class="nav-text">Hedged Read</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置RS的数据均衡"><span class="nav-number">5.</span> <span class="nav-text">配置RS的数据均衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置HBase-Canary"><span class="nav-number">2.</span> <span class="nav-text">配置HBase Canary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检查以及修复HBase表"><span class="nav-number">3.</span> <span class="nav-text">检查以及修复HBase表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hedged-Read"><span class="nav-number">4.</span> <span class="nav-text">Hedged Read</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置RS的数据均衡"><span class="nav-number">5.</span> <span class="nav-text">配置RS的数据均衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hbase节点平滑下线"><span class="nav-number">6.</span> <span class="nav-text">hbase节点平滑下线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">7.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
