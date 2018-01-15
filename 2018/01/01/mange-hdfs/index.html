@@ -1,4 +1,455 @@
-<!DOCTYPE html><html class="theme-next mist use-motion" lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="//fonts.lug.ustc.edu.cn/css?family=Monta:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-3232.png?v=5.1.3"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-1616.png?v=5.1.3"><link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222"><meta name="keywords" content="Hexo, NexT"><meta name="description" content="前言这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄"><meta property="og:type" content="article"><meta property="og:title" content="管理HDFS服务"><meta property="og:url" content="https://leunguu.github.io/2018/01/01/mange-hdfs/index.html"><meta property="og:site_name" content="学而时习之"><meta property="og:description" content="前言这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄"><meta property="og:locale" content="zh-Hans"><meta property="og:image" content="https://leunguu.github.io/images/manage-hdfs.jpg"><meta property="og:image" content="https://leunguu.github.io/images/du_result.png"><meta property="og:image" content="https://leunguu.github.io/images/hdfs_report.png"><meta property="og:image" content="https://leunguu.github.io/images/center_cache.png"><meta property="og:updated_time" content="2018-01-11T14:54:53.000Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="管理HDFS服务"><meta name="twitter:description" content="前言这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄"><meta name="twitter:image" content="https://leunguu.github.io/images/manage-hdfs.jpg"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Mist",version:"5.1.3",sidebar:{position:"left",offset:12,b2t:!1,scrollpercent:!0,onmobile:!0},fancybox:!0,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"输入你想要...",hits_empty:"很抱歉，满世界都找不到: ${query}的文章",hits_stats:"共找到 ${hits} 篇文章， 花了 ${time} ms"}}}</script><link rel="canonical" href="https://leunguu.github.io/2018/01/01/mange-hdfs/"><title>管理HDFS服务 | 学而时习之</title></head><body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div><header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">学而时习之</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle"></p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br> 归档</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://leunguu.github.io/2018/01/01/mange-hdfs/"><span hidden itemprop="author" itemscope itemtype="http://schema.org/Person"><meta itemprop="name" content="LEUNGUU"><meta itemprop="description" content=""><meta itemprop="image" content="/images/my_photo.png"></span><span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization"><meta itemprop="name" content="学而时习之"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">管理HDFS服务</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-01T11:37:41+08:00">2018-01-01</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/大数据/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a></span></span> <span id="/2018/01/01/mange-hdfs/" class="leancloud_visitors" data-flag-title="管理HDFS服务"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span> <span class="post-meta-item-text">阅读次数&#58;</span><span class="leancloud-visitors-count"></span></span></div></header><div class="post-body" itemprop="articleBody"><p><img src="/images/manage-hdfs.jpg" alt=""></p><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p id="div-border-left-blue">前言</p></h3><p>这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄<a id="more"></a></p><h3 id="NameNode管理失效的DataNode"><a href="#NameNode管理失效的DataNode" class="headerlink" title="NameNode管理失效的DataNode"></a><p id="div-border-left-blue">NameNode管理失效的DataNode</p></h3><p>一般在一段时间（默认是10分钟）Namenode收不到DataNode的heartbeats就认为DN失效了。这时候：NN会查找哪些block在这个失效的DN上，并定位其他拥有这些block备份的DN，这些DN会将这些block复制到另外的DN上，以维持设置的复制因子数。同时将失效的DN下线。</p><h3 id="配置DN的存储平衡"><a href="#配置DN的存储平衡" class="headerlink" title="配置DN的存储平衡"></a><p id="div-border-left-blue">配置DN的存储平衡</p></h3><p>当时遇到的一个坑是机器dn上面的磁盘大小不一致，然后首先是想到配置存储平衡看能不能让dn自己搞定。</p><p>存储平衡可以配置两个东西：</p><ul><li>DN内不同容量的磁盘允许多大的误差就被认为是平衡的</li><li>有多大比例的block会写到DN中容量比较大的那块磁盘里面。</li></ul><blockquote><p>需要配置的属性如下：<br><em>dfs.datanode.fsdataset.volume.choosing.policy</em> / <em>org.apache.hadoop.hdfs.server.datanode.fsdataset.AvailableSpaceVolumeChoosingPolicy</em><br>（使存储平衡生效）<br><em>dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold</em> / 10737418240 (default) （这个10G是指一个DN内磁盘最大和最小的容量差要在10G之内）<br><em>dfs.datanode.available-space-volume-choosing-policy.balanced-space-preference-fraction</em> / 0.75(defalut) （百分之75的新blk会发送的容量更大的磁盘上）<br>配置后重启DN即可。<br> <em>dfs.datanode.du.reserved</em> / 10GB 每一个dn的每一个目录保留的非hdfs空间。</p></blockquote><p>后面发现平衡的效果并不是特别理想，不理想的原因其实是因为总可用的容量并不是hdfs report的那个总可用容量；下面做一个描述。<br><img src="/images/du_result.png" alt=""><br>看到上图，这个盘是243g，但是仔细一看，used+avail != size。。231g != 243g。。再看一下hdfs report出来的结果：<br><img src="/images/hdfs_report.png" alt=""><br>一看好像没啥特别，但是仔细一观察，DFS Remaining怎么就比磁盘的avail还要大呢。。这是要写爆盘的节奏吗。。。其实这里的原理是，Configured Capacity是等于磁盘总容量减去我们上面配置的那个du.reserved的值，也就是243-10，就是233左右，然后hdfs认为已经给你预留了，剩下的都可以写数据了。但是，实际上是不行的。。因为这个磁盘本来可用就少了12g。所以就会出现你信心满满的配置好了上面的属性之后，仍然会写爆磁盘的情况。。解决办法是将du.reserved的值设置大一点，令到hdfs做完减法之后DFS Remaining要少于avail就好了。但是对于追求稳定完美的运维来说，好像还是不那么舒服，因为总是感觉一边大一边小，资源利用率不是那么高。于是我们就想着把磁盘都搞成一样大的。通过讨论，我们做了如下操作：</p><blockquote><p>一个dn上磁盘大小不一致的时候， 可以将数据目录移到大的磁盘上，然后做一个软连接到原来的目录上。将软连接写到配置文件中即可。当然这是在有数据的时候。也可以使用将dn下线的办法再更换数据目录。软连接的权限不影响，实体目录的权限才需要配置正确.</p></blockquote><p>这样我们就可以把小的磁盘去掉，留一个软连接就好了。</p><h3 id="配置本地读（Short-circuit-read）"><a href="#配置本地读（Short-circuit-read）" class="headerlink" title="配置本地读（Short-circuit read）"></a><p id="div-border-left-blue">配置本地读（Short-circuit read）</p></h3><pre><code>配置如下：
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.lug.ustc.edu.cn/css?family=Monta:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-3232.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-1616.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄">
+<meta property="og:type" content="article">
+<meta property="og:title" content="管理HDFS服务">
+<meta property="og:url" content="https://leunguu.github.io/2018/01/01/mange-hdfs/index.html">
+<meta property="og:site_name" content="学而时习之">
+<meta property="og:description" content="前言这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://leunguu.github.io/images/manage-hdfs.jpg">
+<meta property="og:image" content="https://leunguu.github.io/images/du_result.png">
+<meta property="og:image" content="https://leunguu.github.io/images/hdfs_report.png">
+<meta property="og:image" content="https://leunguu.github.io/images/center_cache.png">
+<meta property="og:updated_time" content="2018-01-11T14:54:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="管理HDFS服务">
+<meta name="twitter:description" content="前言这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄">
+<meta name="twitter:image" content="https://leunguu.github.io/images/manage-hdfs.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","offset":12,"b2t":false,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入你想要...","hits_empty":"很抱歉，满世界都找不到: ${query}的文章","hits_stats":"共找到 ${hits} 篇文章， 花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://leunguu.github.io/2018/01/01/mange-hdfs/"/>
+
+
+
+
+
+  <title>管理HDFS服务 | 学而时习之</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">学而时习之</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://leunguu.github.io/2018/01/01/mange-hdfs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="LEUNGUU">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/my_photo.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="学而时习之">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">管理HDFS服务</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-01T11:37:41+08:00">
+                2018-01-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/大数据/" itemprop="url" rel="index">
+                    <span itemprop="name">大数据</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/01/01/mange-hdfs/" class="leancloud_visitors" data-flag-title="管理HDFS服务">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/images/manage-hdfs.jpg" alt=""></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a><p id="div-border-left-blue">前言</p></h3><p>这篇文章主要记录一下我管理HDFS集群的时候遇到一些坑的填坑办法，用来提醒自己，也希望启迪他人。😄<a id="more"></a></p>
+<h3 id="NameNode管理失效的DataNode"><a href="#NameNode管理失效的DataNode" class="headerlink" title="NameNode管理失效的DataNode"></a><p id="div-border-left-blue">NameNode管理失效的DataNode</p></h3><p>一般在一段时间（默认是10分钟）Namenode收不到DataNode的heartbeats就认为DN失效了。这时候：NN会查找哪些block在这个失效的DN上，并定位其他拥有这些block备份的DN，这些DN会将这些block复制到另外的DN上，以维持设置的复制因子数。同时将失效的DN下线。</p>
+<h3 id="配置DN的存储平衡"><a href="#配置DN的存储平衡" class="headerlink" title="配置DN的存储平衡"></a><p id="div-border-left-blue">配置DN的存储平衡</p></h3><p>当时遇到的一个坑是机器dn上面的磁盘大小不一致，然后首先是想到配置存储平衡看能不能让dn自己搞定。</p>
+<p>存储平衡可以配置两个东西：</p>
+<ul>
+<li>DN内不同容量的磁盘允许多大的误差就被认为是平衡的</li>
+<li>有多大比例的block会写到DN中容量比较大的那块磁盘里面。</li>
+</ul>
+<blockquote>
+<p>需要配置的属性如下：<br><em>dfs.datanode.fsdataset.volume.choosing.policy</em> / <em>org.apache.hadoop.hdfs.server.datanode.fsdataset.AvailableSpaceVolumeChoosingPolicy</em><br>（使存储平衡生效）<br><em>dfs.datanode.available-space-volume-choosing-policy.balanced-space-threshold</em>  /  10737418240 (default) （这个10G是指一个DN内磁盘最大和最小的容量差要在10G之内）<br><em>dfs.datanode.available-space-volume-choosing-policy.balanced-space-preference-fraction</em> / 0.75(defalut) （百分之75的新blk会发送的容量更大的磁盘上）<br>配置后重启DN即可。<br> <em>dfs.datanode.du.reserved</em> / 10GB 每一个dn的每一个目录保留的非hdfs空间。</p>
+</blockquote>
+<p>后面发现平衡的效果并不是特别理想，不理想的原因其实是因为总可用的容量并不是hdfs report的那个总可用容量；下面做一个描述。<br><img src="/images/du_result.png" alt=""><br>看到上图，这个盘是243g，但是仔细一看，used+avail != size。。231g != 243g。。再看一下hdfs report出来的结果：<br><img src="/images/hdfs_report.png" alt=""><br>一看好像没啥特别，但是仔细一观察，DFS Remaining怎么就比磁盘的avail还要大呢。。这是要写爆盘的节奏吗。。。其实这里的原理是，Configured Capacity是等于磁盘总容量减去我们上面配置的那个du.reserved的值，也就是243-10，就是233左右，然后hdfs认为已经给你预留了，剩下的都可以写数据了。但是，实际上是不行的。。因为这个磁盘本来可用就少了12g。所以就会出现你信心满满的配置好了上面的属性之后，仍然会写爆磁盘的情况。。解决办法是将du.reserved的值设置大一点，令到hdfs做完减法之后DFS Remaining要少于avail就好了。但是对于追求稳定完美的运维来说，好像还是不那么舒服，因为总是感觉一边大一边小，资源利用率不是那么高。于是我们就想着把磁盘都搞成一样大的。通过讨论，我们做了如下操作：</p>
+<blockquote>
+<p>一个dn上磁盘大小不一致的时候， 可以将数据目录移到大的磁盘上，然后做一个软连接到原来的目录上。将软连接写到配置文件中即可。当然这是在有数据的时候。也可以使用将dn下线的办法再更换数据目录。软连接的权限不影响，实体目录的权限才需要配置正确.</p>
+</blockquote>
+<p>这样我们就可以把小的磁盘去掉，留一个软连接就好了。</p>
+<h3 id="配置本地读（Short-circuit-read）"><a href="#配置本地读（Short-circuit-read）" class="headerlink" title="配置本地读（Short-circuit read）"></a><p id="div-border-left-blue">配置本地读（Short-circuit read）</p></h3><pre><code>配置如下：
  在hdfs-site.xml文件中添加：   
  &lt;property&gt;
    &lt;name&gt;dfs.client.read.shortcircuit&lt;/name&gt;
@@ -16,15 +467,30 @@
    &lt;name&gt;dfs.domain.socket.path&lt;/name&gt;
    &lt;value&gt;/var/run/hadoop-hdfs/dn&lt;/value&gt;
  &lt;/property&gt;
-</code></pre><h3 id="HDFS-balancers"><a href="#HDFS-balancers" class="headerlink" title="HDFS balancers"></a><p id="div-border-left-blue">HDFS balancers</p></h3><p>balancer会移动block和data直到每一个DN的用量和集群的用量不超过一个给定的阈值。（<strong>每一个DN的用量指该节点中使用的空间占整个节点的空间的百分比，而集群的用量是指整个集群的使用百分比</strong>）。balancer并不会平衡一个DN内部不同磁盘的容量。（<strong>比如一个DN中有两个目录数据量不一样，但是balancer不会令到两个目录数据平均分</strong>）。<br>运行balancer的命令：</p><ul><li>sudo -u hdfs hdfs balancer （不加任何参数的情况下默认的threshold为10%，这个10%的意思是比如整个集群的用量是40%，balancer会保证每个DN的磁盘用量会在30%和50%（占那个DN的总量）之间。）</li><li>sudo -u hdfs hdfs balancer -threshold 5（5%）<br>同时还可以调整balancer的网络带宽：<br> hdfs dfsadmin -setBalancerBandwidth &#60;newbandwidth&#62;</li></ul><h3 id="配置NFS-gateway"><a href="#配置NFS-gateway" class="headerlink" title="配置NFS gateway"></a><p id="div-border-left-blue">配置NFS gateway</p></h3><p>NFSv3 gateway允许客户端将 HDFS mount到本地文件系统。这个gateway可以是集群中的任意一台机器。<br>安装配置步骤：</p><ol><li><p>安装所需的软件包：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install nfs-utils nfs-utils-lib hadoop-hdfs-nfs3 rpcbind*</span><br></pre></td></tr></table></figure></li><li><p>在NN上的hdfs-site.xml中配置如下属性：</p><pre><code>&lt;property&gt;
+</code></pre><h3 id="HDFS-balancers"><a href="#HDFS-balancers" class="headerlink" title="HDFS balancers"></a><p id="div-border-left-blue">HDFS balancers</p></h3><p>balancer会移动block和data直到每一个DN的用量和集群的用量不超过一个给定的阈值。（<strong>每一个DN的用量指该节点中使用的空间占整个节点的空间的百分比，而集群的用量是指整个集群的使用百分比</strong>）。balancer并不会平衡一个DN内部不同磁盘的容量。（<strong>比如一个DN中有两个目录数据量不一样，但是balancer不会令到两个目录数据平均分</strong>）。<br>运行balancer的命令：</p>
+<ul>
+<li>sudo -u hdfs hdfs balancer （不加任何参数的情况下默认的threshold为10%，这个10%的意思是比如整个集群的用量是40%，balancer会保证每个DN的磁盘用量会在30%和50%（占那个DN的总量）之间。）</li>
+<li>sudo -u hdfs hdfs balancer -threshold 5（5%）<br>同时还可以调整balancer的网络带宽：<br>   hdfs dfsadmin -setBalancerBandwidth &#60;newbandwidth&#62;</li>
+</ul>
+<h3 id="配置NFS-gateway"><a href="#配置NFS-gateway" class="headerlink" title="配置NFS gateway"></a><p id="div-border-left-blue">配置NFS gateway</p></h3><p>NFSv3 gateway允许客户端将 HDFS mount到本地文件系统。这个gateway可以是集群中的任意一台机器。<br>安装配置步骤：</p>
+<ol>
+<li><p>安装所需的软件包： </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install nfs-utils nfs-utils-lib hadoop-hdfs-nfs3 rpcbind*</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在NN上的hdfs-site.xml中配置如下属性：</p>
+<pre><code>&lt;property&gt;
    &lt;name&gt;dfs.namenode.accesstime.precision&lt;/name&gt;
      &lt;value&gt;3600000&lt;/value&gt;
 &lt;/property&gt;
-</code></pre></li><li><p>在NFS server中的hdfs-site.xml添加：</p><pre><code>&lt;property&gt;
+</code></pre></li>
+<li><p>在NFS server中的hdfs-site.xml添加：</p>
+<pre><code>&lt;property&gt;
   &lt;name&gt;dfs.nfs3.dump.dir&lt;/name&gt;
      &lt;value&gt;/tmp/.hdfs-nfs&lt;/value&gt;
 &lt;/property&gt;
-</code></pre></li><li><p>在NN的core-site.xml中添加代理用户：</p><pre><code>&lt;property&gt;
+</code></pre></li>
+<li><p>在NN的core-site.xml中添加代理用户：</p>
+<pre><code>&lt;property&gt;
    &lt;name&gt;hadoop.proxyuser.hdfs.groups&lt;/name&gt;
       &lt;value&gt;*&lt;/value&gt;
 &lt;/property&gt;
@@ -32,7 +498,25 @@
    &lt;name&gt;hadoop.proxyuser.hdfs.hosts&lt;/name&gt;
       &lt;value&gt;*&lt;/value&gt;
 &lt;/property&gt;
-</code></pre></li><li><p>重启NN</p></li><li><p>在NFS服务器上：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service nfs stop</span><br><span class="line">sudo service hadoop-hdfs-nfs3 start</span><br></pre></td></tr></table></figure></li><li><p>检查是否正常工作：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rpcinfo -p &lt;nfs_server_ip_address&gt;;</span><br></pre></td></tr></table></figure></li><li><p>验证hdfs是否可以被mount，使用showmount命令：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">showmount -e &lt;nfs_server_ip_address&gt;;</span><br></pre></td></tr></table></figure></li><li><p>挂载hdfs：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mount -t nfs -o vers=3,proto=tcp,nolock，noatime &lt;nfs_server_hostname&gt;:/  /&lt;hdfs_nfs_mount&gt;</span><br></pre></td></tr></table></figure></li><li><p>这个服务只识别UID和GID，如果不同机器的用户UID和GID不同，mount上去之后，文件在不同机器便会显示属于不用的用户</p></li><li><p>如果使用了kerberos认证，则需要在nfs server的hdfs-site.xml文件里面加上以下属性：</p><pre><code>&lt;property&gt;
+</code></pre></li>
+<li><p>重启NN</p>
+</li>
+<li><p>在NFS服务器上：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service nfs stop</span><br><span class="line">sudo service hadoop-hdfs-nfs3 start</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查是否正常工作：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rpcinfo -p &lt;nfs_server_ip_address&gt;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证hdfs是否可以被mount，使用showmount命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">showmount -e &lt;nfs_server_ip_address&gt;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>挂载hdfs：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mount -t nfs -o vers=3,proto=tcp,nolock，noatime &lt;nfs_server_hostname&gt;:/  /&lt;hdfs_nfs_mount&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这个服务只识别UID和GID，如果不同机器的用户UID和GID不同，mount上去之后，文件在不同机器便会显示属于不用的用户</p>
+</li>
+<li><p>如果使用了kerberos认证，则需要在nfs server的hdfs-site.xml文件里面加上以下属性：</p>
+<pre><code>&lt;property&gt;
    &lt;name&gt;dfs.nfs.keytab.file&lt;/name&gt;
       &lt;value&gt;/etc/hadoop/conf/hdfs.keytab&lt;/value&gt; 
 &lt;/property&gt;
@@ -40,4 +524,918 @@
    &lt;name&gt;dfs.nfs.kerberos.principal&lt;/name&gt;
       &lt;value&gt;hdfs/_HOST@YOUR-REALM.COM&lt;/value&gt;
 &lt;/property&gt;
-</code></pre></li></ol><h3 id="设置HDFS的Quotas"><a href="#设置HDFS的Quotas" class="headerlink" title="设置HDFS的Quotas"></a><p id="div-border-left-blue">设置HDFS的Quotas</p></h3><p>hdfs quotas有以下两种形式：</p><ul><li>限制某个目录下的文件数量</li><li>限制某个目录的空间大小</li></ul><p>上面两种形式是独立的，文件或者目录的创建如果会引起quota超出则会失败。</p><blockquote><p>启用hdfs space quotas：hdfs dfsadmin -setSpaceQuota n dir （上面n是字节数，dir是需要设置限额的目录。后面可以接多个目录，n则会对这多个目录生效。）<br>取消hdfs space quotas：hdfs dfsadmin -clrSpaceQuota dir （dir 是需要设置的目录，后面可接多个）</p><p>启用hdfs name quotas：hdfs dfsadmin -setQuota n dir （n代表目录和文件数量，dir是需要设置的目录，后面可接多个，n则会对多个生效。比如n是1，则不能往目录放任何东西，1代表目录本身，要从2开始）<br>取消hdfs name quotas：hdfs dfsadmin -clrQuotas dir （dir是需要设置的目录，后面可接多个）</p></blockquote><h3 id="配置可挂载的HDFS"><a href="#配置可挂载的HDFS" class="headerlink" title="配置可挂载的HDFS"></a><p id="div-border-left-blue">配置可挂载的HDFS</p></h3><ol><li><p>安装hadoop-hdfs-fuse：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install hadoop-hdfs-fuse</span><br></pre></td></tr></table></figure></li><li><p>创建挂载点：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p &lt;mount_point&gt;; hadoop-fuse-dfs dfs://&lt;nameservice_id&gt;; &lt;mount_point&gt;</span><br></pre></td></tr></table></figure></li><li><p>卸载挂载点：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">umount &lt;mount_point&gt;</span><br></pre></td></tr></table></figure></li></ol><h3 id="配置中央缓存管理"><a href="#配置中央缓存管理" class="headerlink" title="配置中央缓存管理"></a><p id="div-border-left-blue">配置中央缓存管理</p></h3><p>这是一个精确的缓存机制，它允许用户缓存hdfs上某一个路径下的文件。<br>可以防止常用的数据被清出内存，NN管理缓存便于作业的安排与调度，同时可以提高整个集群的内存利用率（通过指定某些副本，从而免去全部副本缓存buffer的开销）。<br><img src="/images/center_cache.png" alt=""><br>在上面的架构中，NN负责协调集群中所有DN的内存。NN会定期收到来自集群中的每一个DN描述各自块缓存的情况。NN管理DN缓存是通过使用捎带确认标志的心跳信号传送缓存或者接收缓存命令。NN通过查看它自身的缓存指令集去决定什么文件或目录应该被缓存。缓存指令被持久存储在FsImage和EditLog上面，并且可以使用命令行或者java接口去增删改。NN同时也保存了一系列缓存池，用来分类管理属于资源管理的缓存命令和执行权限的缓存命令。NN会定期重复扫描命名空间和现有的缓存目录去决定哪些块需要被缓存或者解除缓存并分配缓存到DN。用户增加或者删除缓存指令或者删除缓存池同样会触发重复扫描。<br>缓存指令定义了一个需要被缓存的路径。路径可以是文件或者目录。目录并不会被循环缓存，也即是只有第一层目录的文件会被缓存。缓存指令的参数有诸如缓存复制因子和过期时间。这里的复制因子表示blk需要被缓存的副本数。如果出现多个缓存指令指向同一个文件，则会取最大的复制因子数。<br>缓存池是用于将缓存指令分组管理。缓存池的权限管理就类似于UNIX。写权限允许用户增加和删除池中的缓存指令。读权限允许用户列出池中的缓存指令和一些元数据。执行权限未被使用。缓存池同样被用来作资源管理。缓存池可以限制池中所有缓存指令可缓存的字节数和最大的过期时间。</p><p>缓存指令的命令：</p><ul><li>新增：<br>hdfs cacheadmin -addDirective -path &#60;path&#62; -pool &#60;pool-name&#62; [-force] [-replication &#60;replication&#62;] [-ttl &#60;time-to-live&#62;]（path指需要被缓存的目录或者文件的路径，pool-name指路径加到那个池中，这里需要拥有写权限。force指跳过检查缓存池的资源限制。replication指复制因子，默认是1。time-to-live指缓存生效时间。可以使用秒，分，时或者日作为单位，例如：30m,4h,20d。never则是永不过期。默认是never）</li><li>删除：<br>hdfs cacheadmin -removeDirective &#60;id&#62;（id指需要被删除的缓存指令的id，可以使用list查看，需要有写权限）<br> hdfs cacheadmin -removeDirectives &#60;path&#62; （path指路径中的所有缓存指令，需要写权限）</li><li>列举：<br>hdfs cacheadmin -listDirectives [-stats] [-path &#60;path&#62;] [-pool &#60;pool&#62;] （path指该路径的缓存指令，需要读权限。pool指该池中属于那个路径的指令。stats指统计信息）</li></ul><p>缓存池命令：</p><ul><li>新增：<br>hdfs cacheadmin -addPool &#60;name&#62; [-owner &#60;owner&#62;] [-group &#60;group&#62;] [-mode &#60;mode&#62;] [-limit &#60;limit&#62;] [-maxTtl &#60;maxTtl&#62;] （name指池的名字。owner可指定，默认是当前用户。group指池的分组。mode指权限，默认是0755。limit指池中所有指令总共可以缓存的字节数，默认是无限制。maxTtl指池中指令最大的过期时间，默认没有最大值）</li><li>修改：<br>hdfs cacheadmin -modifyPool &#60;name&#62; [-owner &#60;owner&#62;] [-group &#60;group&#62;] [-mode &#60;mode&#62;] [-limit &#60;limit&#62;] [-maxTtl &#60;maxTtl&#62;]</li><li>删除：<br>hdfs cacheadmin -removePool &#60;name&#62;</li><li>列举：<br>hdfs cacheadmin -listPools [-stats] [&#60;name&#62;] （stats指统计信息）</li></ul><p>配置缓存：</p><ol><li>libhadoop.so</li><li>设置hdfs-site.xml里面的dfs.datanode.max.locked.memory属性（需要考虑为DN，jvm heap和操作系统的页缓存预留内存）</li><li>调整ulimit -l 出来的值必须要比上面设置的属性值要大或者值是没有限制。（需要注意的是，上面属性的value的单位是b，而ulimit -l的单位是KB）</li></ol><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a><p id="div-border-left-blue">参考</p></h3><p><a href="https://www.cloudera.com/documentation/enterprise/latest/topics/admin_hdfs_config.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/enterprise/latest/topics/admin_hdfs_config.html</a></p></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>您的支持将鼓励我继续创作！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="LEUNGUU 微信支付"><p>微信支付</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="/images/alipay.jpeg" alt="LEUNGUU 支付宝"><p>支付宝</p></div></div></div></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>本文作者：</strong> LEUNGUU</li><li class="post-copyright-link"> <strong>本文链接：</strong> <a href="https://leunguu.github.io/2018/01/01/mange-hdfs/" title="管理HDFS服务">https://leunguu.github.io/2018/01/01/mange-hdfs/</a></li><li class="post-copyright-license"> <strong>版权声明：</strong> 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！</li></ul></div><footer class="post-footer"><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2017/12/30/ansible-deploy-cdh/" rel="next" title="Ansible部署CDH"><i class="fa fa-chevron-left"></i> Ansible部署CDH</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/01/02/manage-yarn-2/" rel="prev" title="管理YARN服务">管理YARN服务<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"><div id="lv-container" data-id="city" data-uid="MTAyMC8zMzA2Ny85NjI5"></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div id="sidebar-dimmer"></div><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="/images/my_photo.png" alt="LEUNGUU"><p class="site-author-name" itemprop="name">LEUNGUU</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">14</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/bigdata/index.html"><span class="site-state-item-count">4</span> <span class="site-state-item-name">分类</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/LEUNGUU" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:444945384@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NameNode管理失效的DataNode"><span class="nav-number">2.</span> <span class="nav-text">NameNode管理失效的DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置DN的存储平衡"><span class="nav-number">3.</span> <span class="nav-text">配置DN的存储平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置本地读（Short-circuit-read）"><span class="nav-number">4.</span> <span class="nav-text">配置本地读（Short-circuit read）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-balancers"><span class="nav-number">5.</span> <span class="nav-text">HDFS balancers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置NFS-gateway"><span class="nav-number">6.</span> <span class="nav-text">配置NFS gateway</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置HDFS的Quotas"><span class="nav-number">7.</span> <span class="nav-text">设置HDFS的Quotas</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置可挂载的HDFS"><span class="nav-number">8.</span> <span class="nav-text">配置可挂载的HDFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置中央缓存管理"><span class="nav-number">9.</span> <span class="nav-text">配置中央缓存管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">LEUNGUU</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span title="Site words total count">15.3k</span></div><div class="footer-custom">Hosted by <a target="_blank" href="https://pages.github.com">GitHub Pages</a></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script><script type="text/javascript">!function(e,t){var c,n=e.getElementsByTagName("script")[0];"function"!=typeof LivereTower&&((c=e.createElement("script")).src="https://cdn-city.livere.com/js/embed.dist.js",c.async=!0,n.parentNode.insertBefore(c,n))}(document)</script><script type="text/javascript">var isfetched=!1,isXml=!0,search_path="search.xml";0===search_path.length?search_path="search.xml":/json$/i.test(search_path)&&(isXml=!1);var path="/"+search_path,onPopupClose=function(t){$(".popup").hide(),$("#local-search-input").val(""),$(".search-result-list").remove(),$("#no-result").remove(),$(".local-search-pop-overlay").remove(),$("body").css("overflow","")};function proceedsearch(){$("body").append('<div class="search-popup-overlay local-search-pop-overlay"></div>').css("overflow","hidden"),$(".search-popup-overlay").click(onPopupClose),$(".popup").toggle();var t=$("#local-search-input");t.attr("autocapitalize","none"),t.attr("autocorrect","off"),t.focus()}var searchFunc=function(t,e,o){"use strict";$("body").append('<div class="search-popup-overlay local-search-pop-overlay"><div id="search-loading-icon"><i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i></div></div>').css("overflow","hidden"),$("#search-loading-icon").css("margin","20% auto 0 auto").css("text-align","center"),$.ajax({url:t,dataType:isXml?"xml":"json",async:!0,success:function(t){isfetched=!0,$(".popup").detach().appendTo(".header-inner");var n=isXml?$("entry",t).map(function(){return{title:$("title",this).text(),content:$("content",this).text(),url:$("url",this).text()}}).get():t,r=document.getElementById(e),s=document.getElementById(o),a=function(){var t=r.value.trim().toLowerCase(),e=t.split(/[\s\-]+/);e.length>1&&e.push(t);var o=[];if(t.length>0&&n.forEach(function(n){var r=!1,s=0,a=0,i=n.title.trim(),c=i.toLowerCase(),l=n.content.trim().replace(/<[^>]+>/g,""),h=l.toLowerCase(),p=decodeURIComponent(n.url),u=[],f=[];if(""!=i&&(e.forEach(function(t){function e(t,e,o){var n=t.length;if(0===n)return[];var r=0,s=[],a=[];for(o||(e=e.toLowerCase(),t=t.toLowerCase());(s=e.indexOf(t,r))>-1;)a.push({position:s,word:t}),r=s+n;return a}u=u.concat(e(t,c,!1)),f=f.concat(e(t,h,!1))}),(u.length>0||f.length>0)&&(r=!0,s=u.length+f.length)),r){[u,f].forEach(function(t){t.sort(function(t,e){return e.position!==t.position?e.position-t.position:t.word.length-e.word.length})});function d(e,o,n,r){for(var s=r[r.length-1],i=s.position,c=s.word,l=[],h=0;i+c.length<=n&&0!=r.length;){c===t&&h++,l.push({position:i,length:c.length});var p=i+c.length;for(r.pop();0!=r.length&&(i=(s=r[r.length-1]).position,c=s.word,p>i);)r.pop()}return a+=h,{hits:l,start:o,end:n,searchTextCount:h}}var g=[];0!=u.length&&g.push(d(0,0,i.length,u));for(var v=[];0!=f.length;){var $=f[f.length-1],C=$.position,m=$.word,x=C-20,w=C+80;x<0&&(x=0),w<C+m.length&&(w=C+m.length),w>l.length&&(w=l.length),v.push(d(0,x,w,f))}v.sort(function(t,e){return t.searchTextCount!==e.searchTextCount?e.searchTextCount-t.searchTextCount:t.hits.length!==e.hits.length?e.hits.length-t.hits.length:t.start-e.start});var y=parseInt("1");y>=0&&(v=v.slice(0,y));function T(t,e){var o="",n=e.start;return e.hits.forEach(function(e){o+=t.substring(n,e.position);var r=e.position+e.length;o+='<b class="search-keyword">'+t.substring(e.position,r)+"</b>",n=r}),o+=t.substring(n,e.end)}var b="";0!=g.length?b+="<li><a href='"+p+"' class='search-result-title'>"+T(i,g[0])+"</a>":b+="<li><a href='"+p+"' class='search-result-title'>"+i+"</a>",v.forEach(function(t){b+="<a href='"+p+'\'><p class="search-result">'+T(l,t)+"...</p></a>"}),b+="</li>",o.push({item:b,searchTextCount:a,hitCount:s,id:o.length})}}),1===e.length&&""===e[0])s.innerHTML='<div id="no-result"><i class="fa fa-search fa-5x" /></div>';else if(0===o.length)s.innerHTML='<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>';else{o.sort(function(t,e){return t.searchTextCount!==e.searchTextCount?e.searchTextCount-t.searchTextCount:t.hitCount!==e.hitCount?e.hitCount-t.hitCount:e.id-t.id});var a='<ul class="search-result-list">';o.forEach(function(t){a+=t.item}),a+="</ul>",s.innerHTML=a}};r.addEventListener("input",a),$(".local-search-pop-overlay").remove(),$("body").css("overflow",""),proceedsearch()}})};$(".popup-trigger").click(function(t){t.stopPropagation(),!1===isfetched?searchFunc(path,"local-search-input","local-search-result"):proceedsearch()}),$(".popup-btn-close").click(onPopupClose),$(".popup").click(function(t){t.stopPropagation()}),$(document).on("keyup",function(t){27===t.which&&$(".search-popup").is(":visible")&&onPopupClose()})</script><script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script><script>AV.initialize("YKqARsDAMCuxc5j5prDIcKEC-gzGzoHsz","Fk7bBztqxpXjSXnDIkcPBcNe")</script><script>function showTime(e){var t=new AV.Query(e),n=[],o=$(".leancloud_visitors");o.each(function(){n.push($(this).attr("id").trim())}),t.containedIn("url",n),t.find().done(function(e){var t=".leancloud-visitors-count";if(0!==e.length){for(var i=0;i<e.length;i++){var s=e[i],r=s.get("url"),l=s.get("time"),c=document.getElementById(r);$(c).find(t).text(l)}for(i=0;i<n.length;i++){r=n[i],c=document.getElementById(r);var u=$(c).find(t);""==u.text()&&u.text(0)}}else o.find(t).text(0)}).fail(function(e,t){console.log("Error: "+t.code+" "+t.message)})}function addCount(e){var t=$(".leancloud_visitors"),n=t.attr("id").trim(),o=t.attr("data-flag-title").trim(),i=new AV.Query(e);i.equalTo("url",n),i.find({success:function(t){if(t.length>0){var i=t[0];i.fetchWhenSave(!0),i.increment("time"),i.save(null,{success:function(e){$(document.getElementById(n)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to save Visitor num, with error message: "+t.message)}})}else{var s=new e,r=new AV.ACL;r.setPublicReadAccess(!0),r.setPublicWriteAccess(!0),s.setACL(r),s.set("title",o),s.set("url",n),s.set("time",1),s.save(null,{success:function(e){$(document.getElementById(n)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to create")}})}},error:function(e){console.log("Error:"+e.code+" "+e.message)}})}$(function(){var e=AV.Object.extend("Counter");1==$(".leancloud_visitors").length?addCount(e):$(".post-title-link").length>1&&showTime(e)})</script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script></body></html>
+</code></pre></li>
+</ol>
+<h3 id="设置HDFS的Quotas"><a href="#设置HDFS的Quotas" class="headerlink" title="设置HDFS的Quotas"></a><p id="div-border-left-blue">设置HDFS的Quotas</p></h3><p>hdfs quotas有以下两种形式：</p>
+<ul>
+<li>限制某个目录下的文件数量</li>
+<li>限制某个目录的空间大小</li>
+</ul>
+<p>上面两种形式是独立的，文件或者目录的创建如果会引起quota超出则会失败。</p>
+<blockquote>
+<p>启用hdfs  space quotas：hdfs dfsadmin -setSpaceQuota n dir （上面n是字节数，dir是需要设置限额的目录。后面可以接多个目录，n则会对这多个目录生效。）<br>取消hdfs space quotas：hdfs dfsadmin -clrSpaceQuota dir （dir 是需要设置的目录，后面可接多个）</p>
+<p>启用hdfs name quotas：hdfs dfsadmin -setQuota n dir （n代表目录和文件数量，dir是需要设置的目录，后面可接多个，n则会对多个生效。比如n是1，则不能往目录放任何东西，1代表目录本身，要从2开始）<br>取消hdfs name quotas：hdfs dfsadmin -clrQuotas dir （dir是需要设置的目录，后面可接多个）</p>
+</blockquote>
+<h3 id="配置可挂载的HDFS"><a href="#配置可挂载的HDFS" class="headerlink" title="配置可挂载的HDFS"></a><p id="div-border-left-blue">配置可挂载的HDFS</p></h3><ol>
+<li><p>安装hadoop-hdfs-fuse： </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo yum install hadoop-hdfs-fuse</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建挂载点：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mkdir -p &lt;mount_point&gt;; hadoop-fuse-dfs dfs://&lt;nameservice_id&gt;; &lt;mount_point&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>卸载挂载点： </p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">umount &lt;mount_point&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="配置中央缓存管理"><a href="#配置中央缓存管理" class="headerlink" title="配置中央缓存管理"></a><p id="div-border-left-blue">配置中央缓存管理</p></h3><p>这是一个精确的缓存机制，它允许用户缓存hdfs上某一个路径下的文件。<br>可以防止常用的数据被清出内存，NN管理缓存便于作业的安排与调度，同时可以提高整个集群的内存利用率（通过指定某些副本，从而免去全部副本缓存buffer的开销）。<br><img src="/images/center_cache.png" alt=""><br>在上面的架构中，NN负责协调集群中所有DN的内存。NN会定期收到来自集群中的每一个DN描述各自块缓存的情况。NN管理DN缓存是通过使用捎带确认标志的心跳信号传送缓存或者接收缓存命令。NN通过查看它自身的缓存指令集去决定什么文件或目录应该被缓存。缓存指令被持久存储在FsImage和EditLog上面，并且可以使用命令行或者java接口去增删改。NN同时也保存了一系列缓存池，用来分类管理属于资源管理的缓存命令和执行权限的缓存命令。NN会定期重复扫描命名空间和现有的缓存目录去决定哪些块需要被缓存或者解除缓存并分配缓存到DN。用户增加或者删除缓存指令或者删除缓存池同样会触发重复扫描。<br>缓存指令定义了一个需要被缓存的路径。路径可以是文件或者目录。目录并不会被循环缓存，也即是只有第一层目录的文件会被缓存。缓存指令的参数有诸如缓存复制因子和过期时间。这里的复制因子表示blk需要被缓存的副本数。如果出现多个缓存指令指向同一个文件，则会取最大的复制因子数。<br>缓存池是用于将缓存指令分组管理。缓存池的权限管理就类似于UNIX。写权限允许用户增加和删除池中的缓存指令。读权限允许用户列出池中的缓存指令和一些元数据。执行权限未被使用。缓存池同样被用来作资源管理。缓存池可以限制池中所有缓存指令可缓存的字节数和最大的过期时间。</p>
+<p>缓存指令的命令：</p>
+<ul>
+<li>新增：<br>hdfs cacheadmin -addDirective -path &#60;path&#62; -pool &#60;pool-name&#62; [-force] [-replication &#60;replication&#62;] [-ttl &#60;time-to-live&#62;]（path指需要被缓存的目录或者文件的路径，pool-name指路径加到那个池中，这里需要拥有写权限。force指跳过检查缓存池的资源限制。replication指复制因子，默认是1。time-to-live指缓存生效时间。可以使用秒，分，时或者日作为单位，例如：30m,4h,20d。never则是永不过期。默认是never）</li>
+<li>删除：<br>hdfs cacheadmin -removeDirective &#60;id&#62;（id指需要被删除的缓存指令的id，可以使用list查看，需要有写权限）<br>   hdfs cacheadmin -removeDirectives &#60;path&#62; （path指路径中的所有缓存指令，需要写权限）</li>
+<li>列举：<br>hdfs cacheadmin -listDirectives [-stats] [-path &#60;path&#62;] [-pool &#60;pool&#62;] （path指该路径的缓存指令，需要读权限。pool指该池中属于那个路径的指令。stats指统计信息）</li>
+</ul>
+<p>缓存池命令：</p>
+<ul>
+<li>新增：<br>hdfs cacheadmin -addPool &#60;name&#62; [-owner &#60;owner&#62;] [-group &#60;group&#62;] [-mode &#60;mode&#62;] [-limit &#60;limit&#62;] [-maxTtl &#60;maxTtl&#62;] （name指池的名字。owner可指定，默认是当前用户。group指池的分组。mode指权限，默认是0755。limit指池中所有指令总共可以缓存的字节数，默认是无限制。maxTtl指池中指令最大的过期时间，默认没有最大值）</li>
+<li>修改：<br>hdfs cacheadmin -modifyPool &#60;name&#62; [-owner &#60;owner&#62;] [-group &#60;group&#62;] [-mode &#60;mode&#62;] [-limit &#60;limit&#62;] [-maxTtl &#60;maxTtl&#62;] </li>
+<li>删除：<br>hdfs cacheadmin -removePool &#60;name&#62;</li>
+<li>列举：<br>hdfs cacheadmin -listPools [-stats] [&#60;name&#62;] （stats指统计信息）</li>
+</ul>
+<p>配置缓存：</p>
+<ol>
+<li>libhadoop.so</li>
+<li>设置hdfs-site.xml里面的dfs.datanode.max.locked.memory属性（需要考虑为DN，jvm heap和操作系统的页缓存预留内存）</li>
+<li>调整ulimit -l 出来的值必须要比上面设置的属性值要大或者值是没有限制。（需要注意的是，上面属性的value的单位是b，而ulimit -l的单位是KB）</li>
+</ol>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a><p id="div-border-left-blue">参考</p></h3><p><a href="https://www.cloudera.com/documentation/enterprise/latest/topics/admin_hdfs_config.html" target="_blank" rel="noopener">https://www.cloudera.com/documentation/enterprise/latest/topics/admin_hdfs_config.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpeg" alt="LEUNGUU 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpeg" alt="LEUNGUU 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    LEUNGUU
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://leunguu.github.io/2018/01/01/mange-hdfs/" title="管理HDFS服务">https://leunguu.github.io/2018/01/01/mange-hdfs/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/30/ansible-deploy-cdh/" rel="next" title="Ansible部署CDH">
+                <i class="fa fa-chevron-left"></i> Ansible部署CDH
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/02/manage-yarn-2/" rel="prev" title="管理YARN服务">
+                管理YARN服务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMzA2Ny85NjI5"></div>
+    </div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/my_photo.png"
+                alt="LEUNGUU" />
+            
+              <p class="site-author-name" itemprop="name">LEUNGUU</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/bigdata/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/LEUNGUU" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:444945384@qq.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NameNode管理失效的DataNode"><span class="nav-number">2.</span> <span class="nav-text">NameNode管理失效的DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置DN的存储平衡"><span class="nav-number">3.</span> <span class="nav-text">配置DN的存储平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置本地读（Short-circuit-read）"><span class="nav-number">4.</span> <span class="nav-text">配置本地读（Short-circuit read）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HDFS-balancers"><span class="nav-number">5.</span> <span class="nav-text">HDFS balancers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置NFS-gateway"><span class="nav-number">6.</span> <span class="nav-text">配置NFS gateway</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置HDFS的Quotas"><span class="nav-number">7.</span> <span class="nav-text">设置HDFS的Quotas</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置可挂载的HDFS"><span class="nav-number">8.</span> <span class="nav-text">配置可挂载的HDFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置中央缓存管理"><span class="nav-number">9.</span> <span class="nav-text">配置中央缓存管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LEUNGUU</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="Site words total count">15.4k</span>
+  
+</div>
+
+
+
+
+
+
+
+
+  <div class="footer-custom">Hosted by <a target="_blank" href="https://pages.github.com">GitHub Pages</a></div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("YKqARsDAMCuxc5j5prDIcKEC-gzGzoHsz", "Fk7bBztqxpXjSXnDIkcPBcNe");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
